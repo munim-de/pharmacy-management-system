@@ -6,9 +6,9 @@ from datetime import datetime
 import io
 from reportlab.pdfgen import canvas
 
-sales_bp = Blueprint('sales', __name__)
+bp = Blueprint('sales', __name__)
 
-@sales_bp.route('/sales', methods=['GET', 'POST'])
+@bp.route('/sales', methods=['GET', 'POST'])
 @login_required
 @role_required(['admin', 'salesman'])
 def sales():
@@ -34,7 +34,7 @@ def sales():
     medicines = Medicine.query.all()
     return render_template('sales.html', medicines=medicines)
 
-@sales_bp.route('/invoice/<int:sale_id>')
+@bp.route('/invoice/<int:sale_id>')
 @login_required
 @role_required(['admin', 'salesman'])
 def generate_invoice(sale_id):
