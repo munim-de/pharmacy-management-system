@@ -5,6 +5,10 @@ from models import User
 
 auth_bp = Blueprint('auth', __name__)
 
+@auth_bp.route('/')
+def index():
+    return redirect(url_for('auth.login'))
+
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
