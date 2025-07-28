@@ -1,10 +1,20 @@
-from dotenv import load_dotenv
 import os
-load_dotenv()
 
 class Config:
-    SECRET_KEY = os.getenv('SECRET_KEY')
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
-    EMAIL_USER = os.getenv('EMAIL_USER')
-    EMAIL_PASS = os.getenv('EMAIL_PASS')
-    ALERT_RECEIVER = os.getenv('ALERT_RECEIVER')
+    # Secret key for sessions and security
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'devkey')  # Replace 'devkey' with a secure value in production
+
+    # PostgreSQL database URI (set as DATABASE_URL in Render environment)
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        'DATABASE_URL',
+        'sqlite:///local.db'  # fallback to local DB for development
+    )
+
+    # Disable modification tracking to save overhead
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # Optional: Show SQL queries in logs (useful for debugging)
+    SQLALCHEMY_ECHO = os.environ.get('SQLALCHEMY_ECHO', 'False').lower() == 'true'
+
+    # Optional: Enable debug mode if needed
+    DEBUG = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
