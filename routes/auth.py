@@ -5,7 +5,7 @@ from werkzeug.security import check_password_hash
 
 bp = Blueprint('auth', __name__)
 
-@auth_bp.route('/', methods=['GET', 'POST'])
+@bp.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
