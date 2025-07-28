@@ -2,6 +2,7 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -41,7 +42,7 @@ class Sale(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'))
     total_price = db.Column(db.Float, nullable=False)
-    sale_date = db.Column(db.DateTime, nullable=False)
+    sale_date = db.Column(db.DateTime, default=datetime.utcnow)
     salesperson_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     customer = db.relationship('Customer', backref='sales')
