@@ -1,37 +1,31 @@
-from reportlab.pdfgen import canvas
-from flask import send_file
-import io
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+from config import Config
 
-@app.route('/invoice/<int:sale_id>')
-@login_required
-@role_required(['admin', 'salesman'])
-def generate_invoice(sale_id):
-    db = get_db()
-    sale = db.execute('SELECT * FROM Sales WHERE SaleID = ?', (sale_id,)).fetchone()
-    customer = db.execute('SELECT * FROM Customers WHERE CustomerID = ?', (sale['CustomerID'],)).fetchone()
-    items = db.execute('''
-        SELECT Medicines.Name, Medicines.Price, SaleDetails.Quantity
-        FROM SaleDetails
-        JOIN Medicines ON SaleDetails.MedicineID = Medicines.MedicineID
-        WHERE SaleID = ?
-    ''', (sale_id,)).fetchall()
+app = Flask(__name__)
+app.config.from_object(Config)
 
-    buffer = io.BytesIO()
-    p = canvas.Canvas(buffer)
-    p.drawString(100, 800, f"Pharmacy Invoice - Sale ID: {sale_id}")
-    p.drawString(100, 780, f"Customer: {customer['Name']}")
+# Initialize database
+db = SQLAlchemy(app)
 
-    y = 750
-    total = 0
-    for item in items:
-        line = f"{item['Name']} - {item['Quantity']} x {item['Price']:.2f}"
-        p.drawString(100, y, line)
-        total += item['Quantity'] * item['Price']
-        y -= 20
+# Initialize login manager
+login_manager = LoginManager()
+login_manager.login_view = 'login'
+login_manager.init_app(app)
 
-    p.drawString(100, y - 20, f"Total: {total:.2f}")
-    p.showPage()
-    p.save()
+# Import your routes after app is created
+from routes import auth, dashboard, inventory, sales, admin
+app.register_blueprint(auth.bp)
+app.register_blueprint(dashboard.bp)
+app.register_blueprint(inventory.bp)
+app.register_blueprint(sales.bp)
+app.register_blueprint(admin.bp)
 
-    buffer.seek(0)
-    return send_file(buffer, as_attachment=True, download_name=f"invoice_{sale_id}.pdf", mimetype='application/pdf')
+# Optional: basic health check route
+@app.route('/healthz')
+def health():
+    return 'OK'
+
+if __name__ == '__main__':
+    app.run()
