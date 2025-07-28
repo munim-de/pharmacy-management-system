@@ -6,10 +6,11 @@ from datetime import datetime
 import io
 from reportlab.pdfgen import canvas
 
-# ✅ Blueprint definition renamed to 'bp'
-bp = Blueprint('sales', __name__)
+# ✅ Correct Blueprint name for use in app.py
+sales_bp = Blueprint('sales', __name__)
 
-@bp.route('/sales', methods=['GET', 'POST'])
+# 🚀 Sales Page – Create new sale
+@sales_bp.route('/sales', methods=['GET', 'POST'])
 @login_required
 @role_required(['admin', 'salesman'])
 def sales():
@@ -18,6 +19,7 @@ def sales():
         medicine_id = request.form['medicine_id']
         quantity = int(request.form['quantity'])
 
+        # Create new Sale entry
         new_sale = Sale(
             CustomerID=customer_id,
             SaleDate=datetime.now(),
@@ -26,6 +28,7 @@ def sales():
         db.session.add(new_sale)
         db.session.commit()
 
+        # Add sale detail
         sale_detail = SaleDetail(
             SaleID=new_sale.SaleID,
             MedicineID=medicine_id,
@@ -36,6 +39,7 @@ def sales():
         # Update stock
         medicine = Medicine.query.get(medicine_id)
         medicine.QuantityInStock -= quantity
+
         db.session.commit()
 
         return redirect(f'/invoice/{new_sale.SaleID}')
@@ -43,16 +47,22 @@ def sales():
     medicines = Medicine.query.all()
     return render_template('sales.html', medicines=medicines)
 
-@bp.route('/invoice/<int:sale_id>')
+# 🧾 Invoice Generation as PDF
+@sales_bp.route('/invoice/<int:sale_id>')
 @login_required
 @role_required(['admin', 'salesman'])
 def generate_invoice(sale_id):
     sale = Sale.query.get(sale_id)
     customer = Customer.query.get(sale.CustomerID)
-    items = db.session.query(Medicine.Name, Medicine.Price, SaleDetail.Quantity).\
-        join(SaleDetail, Medicine.MedicineID == SaleDetail.MedicineID).\
-        filter(SaleDetail.SaleID == sale_id).all()
 
+    items = db.session.query(
+        Medicine.Name,
+        Medicine.Price,
+        SaleDetail.Quantity
+    ).join(SaleDetail, Medicine.MedicineID == SaleDetail.MedicineID)\
+     .filter(SaleDetail.SaleID == sale_id).all()
+
+    # Generate PDF
     buffer = io.BytesIO()
     p = canvas.Canvas(buffer)
     p.drawString(100, 800, f"Pharmacy Invoice - Sale ID: {sale.SaleID}")
