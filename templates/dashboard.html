@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head><title>Dashboard</title></head>
+<body>
+  <h2>Medicine Stock</h2>
+  <ul>
+    {% for med in stock %}
+      <li>{{ med['Name'] }} - {{ med['QuantityInStock'] }}</li>
+    {% endfor %}
+  </ul>
+
+  <h3>Low Stock Alerts</h3>
+  <ul>
+    {% for med in low_stock %}
+      <li style="color:red">{{ med['Name'] }} ({{ med['QuantityInStock'] }})</li>
+    {% endfor %}
+  </ul>
+
+  <a href="/sales">Process Sales</a> |
+  <a href="/inventory">Manage Inventory</a>
+</body>
+</html>
