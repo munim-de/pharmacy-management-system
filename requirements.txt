@@ -1,0 +1,10 @@
+flask
+flask_sqlalchemy
+flask_login
+python-dotenv
+bcrypt
+reportlab
+psycopg2-binary
+gunicorn
+twilio
+pandas
