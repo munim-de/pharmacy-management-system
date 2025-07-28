@@ -6,6 +6,7 @@ from datetime import datetime
 import io
 from reportlab.pdfgen import canvas
 
+# ✅ Blueprint definition renamed to 'bp'
 bp = Blueprint('sales', __name__)
 
 @bp.route('/sales', methods=['GET', 'POST'])
@@ -17,11 +18,19 @@ def sales():
         medicine_id = request.form['medicine_id']
         quantity = int(request.form['quantity'])
 
-        new_sale = Sale(CustomerID=customer_id, SaleDate=datetime.now(), UserID=current_user.id)
+        new_sale = Sale(
+            CustomerID=customer_id,
+            SaleDate=datetime.now(),
+            UserID=current_user.id
+        )
         db.session.add(new_sale)
         db.session.commit()
 
-        sale_detail = SaleDetail(SaleID=new_sale.SaleID, MedicineID=medicine_id, Quantity=quantity)
+        sale_detail = SaleDetail(
+            SaleID=new_sale.SaleID,
+            MedicineID=medicine_id,
+            Quantity=quantity
+        )
         db.session.add(sale_detail)
 
         # Update stock
@@ -61,4 +70,6 @@ def generate_invoice(sale_id):
     p.save()
 
     buffer.seek(0)
-    return send_file(buffer, as_attachment=True, download_name=f"invoice_{sale_id}.pdf", mimetype='application/pdf')
+    return send_file(buffer, as_attachment=True,
+                     download_name=f"invoice_{sale_id}.pdf",
+                     mimetype='application/pdf')
