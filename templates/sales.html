@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head><title>Sales</title></head>
+<body>
+  <h2>New Sale</h2>
+  <form method="POST">
+    Customer ID: <input name="customer_id" required><br>
+    Medicine: 
+    <select name="medicine_id">
+      {% for med in medicines %}
+        <option value="{{ med['MedicineID'] }}">{{ med['Name'] }}</option>
+      {% endfor %}
+    </select><br>
+    Quantity: <input name="quantity" type="number" required><br>
+    <button type="submit">Submit Sale</button>
+  </form>
+</body>
+</html>
