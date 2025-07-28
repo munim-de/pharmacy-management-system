@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head><title>Inventory</title></head>
+<body>
+  <h2>Add New Medicine</h2>
+  <form method="POST">
+    Name: <input name="name"><br>
+    Brand: <input name="brand"><br>
+    Price: <input name="price"><br>
+    Quantity: <input name="quantity"><br>
+    Expiry Date: <input name="expiry" type="date"><br>
+    <button type="submit">Add</button>
+  </form>
+
+  <h3>Current Inventory</h3>
+  <ul>
+    {% for med in medicines %}
+      <li>{{ med['Name'] }} ({{ med['QuantityInStock'] }})</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
