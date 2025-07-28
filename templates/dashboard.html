@@ -1,22 +1,62 @@
+<!-- templates/dashboard.html -->
+
 <!DOCTYPE html>
-<html>
-<head><title>Dashboard</title></head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Pharmacy Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef1f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .dashboard {
+            max-width: 600px;
+            margin: 80px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+
+        h1 {
+            color: #2d3748;
+        }
+
+        p {
+            font-size: 18px;
+            color: #4a5568;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            color: #ffffff;
+            background-color: #007bff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+
+        a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
 <body>
-  <h2>Medicine Stock</h2>
-  <ul>
-    {% for med in stock %}
-      <li>{{ med['Name'] }} - {{ med['QuantityInStock'] }}</li>
-    {% endfor %}
-  </ul>
+    <div class="dashboard">
+        <h1>Welcome to the Dashboard</h1>
+        {% if user %}
+            <p>Logged in as <strong>{{ user.email }}</strong></p>
+        {% else %}
+            <p>User information not available.</p>
+        {% endif %}
 
-  <h3>Low Stock Alerts</h3>
-  <ul>
-    {% for med in low_stock %}
-      <li style="color:red">{{ med['Name'] }} ({{ med['QuantityInStock'] }})</li>
-    {% endfor %}
-  </ul>
-
-  <a href="/sales">Process Sales</a> |
-  <a href="/inventory">Manage Inventory</a>
+        <a href="{{ url_for('auth.logout') }}">Logout</a>
+    </div>
 </body>
 </html>
