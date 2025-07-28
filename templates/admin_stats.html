@@ -1,0 +1,20 @@
+<h2>Top Selling Medicines</h2>
+<ul>
+  {% for m in top_meds %}
+    <li>{{ m['Name'] }} - {{ m['TotalSold'] }}</li>
+  {% endfor %}
+</ul>
+
+<h2>Sales in Last 7 Days</h2>
+<ul>
+  {% for s in daily_sales %}
+    <li>{{ s['SaleDate'] }}: {{ s['SalesCount'] }} sales</li>
+  {% endfor %}
+</ul>
+
+<h2>Low Stock Alerts</h2>
+<ul>
+  {% for l in low_stock %}
+    <li style="color:red">{{ l['Name'] }} - {{ l['QuantityInStock'] }}</li>
+  {% endfor %}
+</ul>
